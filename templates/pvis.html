@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+<style>
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0;
+  background-color: black;
+}
+
+.stations, .stations svg {
+  position: absolute;
+}
+
+.stations svg {
+  width: 60px;
+  height: 20px;
+  padding-right: 100px;
+  font: 10px sans-serif;
+}
+
+.stations circle {
+  stroke-width: 1.5px
+}
+
+#map {
+  position: relative;
+  margin-top: 1px;
+  width: 100%;
+  height: 100%;
+}
+
+.legend {
+  position: absolute; // Reposition logo from the natural layout
+   right: 0;
+   bottom: 0;
+   margin-bottom: 20px;
+  width: 90x;
+  height: 60x;
+  z-index: 2;
+}
+
+.legend-img {
+  max-width: 50%;
+  margin-left: 10px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    width: 80px;
+    height: 40px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.dropdown {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    margin-top: 80px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 4px 8px;
+    width: 80px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #9E9E9E}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+.list {
+  position: absolute;
+  top: 0;
+  margin-top: 140px;
+  margin-left: 10px;
+}
+
+.month-list {
+  position: absolute;
+  top: 0;
+  margin-top: 170px;
+  margin-left: 10px;
+}
+
+#idxVal0 {
+  position: absolute;
+  top: 0;
+  margin-top: 200px;
+  margin-left: 15px;
+}
+
+#idxVal {
+  position: absolute;
+  top: 0;
+  margin-top: 200px;
+  margin-left: 100px;
+}
+
+#latVal0 {
+  position: absolute;
+  top: 0;
+  margin-top: 215px;
+  margin-left: 15px;
+}
+
+#latVal {
+  position: absolute;
+  top: 0;
+  margin-top: 215px;
+  margin-left: 100px;
+}
+
+#lonVal0 {
+  position: absolute;
+  top: 0;
+  margin-top: 230px;
+  margin-left: 15px;
+}
+
+#lonVal {
+  position: absolute;
+  top: 0;
+  margin-top: 230px;
+  margin-left: 100px;
+}
+
+#locVal0 {
+  position: absolute;
+  top: 0;
+  margin-top: 245px;
+  margin-left: 15px;
+}
+
+#locVal {
+  position: absolute;
+  top: 0;
+  margin-top: 245px;
+  margin-left: 100px;
+}
+
+#priceVal0 {
+  position: absolute;
+  top: 0;
+  margin-top: 260px;
+  margin-left: 15px;
+}
+
+#priceVal {
+  position: absolute;
+  top: 0;
+  margin-top: 260px;
+  margin-left: 100px;
+}
+
+//-----------------------------------------------------
+* {
+  box-sizing: border-box;
+  margin:     0;
+  padding:    0;
+}
+
+body {
+  background:  #ffffff;
+  color:       #000000;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-weight: 300;
+  font-size:   0.9em;
+}
+
+ul {
+  list-style: none;
+}
+
+/**
+ * top header
+ */
+.top-header {
+  position:    relative;
+  align-items: center;
+  background:  #000000;
+  box-shadow: -1px 0 5px 0 #000001;
+  display:     flex;
+  height:      60px;
+  top:         0;
+  width:       100%;
+  text-align: center;
+  justify-content: center;
+}
+
+.top-header.welcome-msg {
+  color: #000000
+}
+
+.logo {
+  height: 35px;
+  padding-left: 40px;
+
+}
+
+.top-header.header-p {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+span.power {
+  color: #99cc33;
+  text-align: center;
+  font-weight:  800;
+  font-size:    2.5em;
+  line-height:  1em;
+  padding-left: 5px;
+}
+
+span.price {
+  color: #ffffcc;
+  text-align: center;
+  font-weight:  800;
+  font-size:    2.5em;
+  line-height:  1em;
+  padding-left: 5px;
+}
+
+span.vis {
+  color: #cccc99;
+  text-align: center;
+  font-weight:  800;
+  font-size:    2.5em;
+  line-height:  1em;
+  padding-left: 5px;
+}
+
+
+/**
+ * top navigation
+ */
+.top-nav {
+  flex: 1;
+}
+
+.top-nav a {
+  color:           #ffffff;
+  font-weight:     400;
+  margin-left:     20px;
+  text-decoration: none;
+}
+
+/**
+ * main container
+ */
+.container {
+  background: #F1F8E9;
+  margin:    60px auto;
+  max-width: 1000px;
+  min-width: 500px;
+  margin: auto;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  height: 300px;
+  width: 750px;
+}
+
+/**
+ * main header
+ */
+.container > header {
+  align-items:     center;
+  background-size: 100%;
+  display:         flex;
+  height:          250px;
+}
+
+.container > header p {
+  border-left:  1px solid #FFFFFF;
+  font-weight:  800;
+  font-size:    2.5em;
+  line-height:  1em;
+  margin-left:  220px;
+  padding-left: 5px;
+}
+
+.container > header span {
+  color: #ffffff;
+}
+
+.container > p span {
+  color: #000000;
+}
+
+.container > section {
+
+  background: #99cc33;
+  align-items:     center;
+  background-size: 100%;
+  display:         flex;
+  height:          250px;
+}
+
+/**
+ * main section
+ */
+.main-section {
+  background: #ffffcc;
+}
+
+.nav-icon {
+  color:      #D1C4E9;
+  padding:    20px;
+  text-align: center;
+}
+
+/**
+ * main navigation
+ */
+.main-nav-btn {
+  background:      none;
+  border-top:      1px solid #D1C4E9;
+  color:           #D1C4E9;
+  display:         block;
+  padding:         20px;
+  text-align:      left;
+  text-decoration: none;
+}
+
+.main-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.8);
+  color:      #624630;
+}
+
+/*.main-nav-btn.active {*/
+/*background: #263238;*/
+/*color:      ;*/
+/*}*/
+
+.main-nav-btn i {
+  width: 20px;
+}
+
+/**
+ * item
+ */
+.item > div:first-of-type {
+  flex:         1;
+  margin-left:  10px;
+  margin-right: 10px;
+}
+
+/**
+ * footer section
+ */
+footer {
+  background: #000000;
+  font-size:  0.8em;
+  height:     130px;
+  position:   relative;
+}
+
+footer p {
+  text-align: center;
+  color: #cccc99
+}
+
+footer p.title {
+  font-size: 1.2em;
+  padding:   15px;
+}
+
+footer ul {
+  align-items: center;
+  display:     flex;
+  padding:     20px;
+}
+
+footer ul li {
+  flex: 1;
+}
+//-----------------------------------------------------
+
+</style>
+<header class="top-header">
+    <img src="{{url_for('static', filename='lightning.png')}}" class="logo" align="left">
+    <p class="header-p">
+      <span class="power">
+        POWER
+      </span>
+      <span class="price">
+        PRICE
+      </span>
+      <span class="vis">
+        VIS
+      </span>
+    </p>
+  </header>
+<body>
+  <div class="map" id="map"></div>
+  <select name="month" id="month" class="month-list" onchange="monthChange()">
+    <option value="" selected="checked">Current Time</option>
+    <option value="Jan">January</option>
+    <option value="Feb">Feburary</option>
+    <option value="Mar">March</option>
+    <option value="Apr">April</option>
+    <option value="May">May</option>
+    <option value="Jun">June</option>
+    <option value="Jul">July</option>
+    <option value="Aug">August</option>
+    <option value="Sep">September</option>
+    <option value="Oct">October</option>
+    <option value="Nov">November</option>
+    <option value="Dec">December</option>
+  </select>
+
+  <select name="state" id="state" class="list" onchange="stateChange()">
+    <option value="" selected="selected">Full View</option>
+    <option value="AZ">Arizona</option>
+    <option value="CA">California</option>
+    <option value="ID">Idaho</option>
+    <option value="MT">Montana</option>
+    <option value="NV">Nevada</option>
+    <option value="NM">New Mexico</option>
+    <option value="OR">Oregon</option>
+    <option value="UT">Utah</option>
+    <option value="WA">Washington</option>
+    <option value="WY">Wyoming</option>
+  </select>
+  <div class="legend">
+    <img src="{{url_for('static', filename='legend.png')}}" class="legend-img"/>
+  </div>
+
+  <p id="idxVal0">Index: </p> <p id="idxVal"></p>
+  <p id="lonVal0">Latitude: </p> <p id="lonVal"></p>
+  <p id="latVal0">Longitude: </p> <p id="latVal"></p>
+  <p id="locVal0">Location: </p> <p id="locVal"></p>
+  <p id="priceVal0">Price: </p> <p id="priceVal"></p>
+
+  <!-- <script src="https://maps.google.com/maps/api/js?sensor=true"></script> -->
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../static/json/currentData.json"></script>
+  <script src="../static/json/month1.json"></script>
+  <script src="../static/json/month2.json"></script>
+  <script src="../static/json/month3.json"></script>
+  <script src="../static/json/month4.json"></script>
+  <script src="../static/json/month5.json"></script>
+  <script src="../static/json/month6.json"></script>
+  <script src="../static/json/month7.json"></script>
+  <script src="../static/json/month8.json"></script>
+  <script src="../static/json/month9.json"></script>
+  <script src="../static/json/month10.json"></script>
+  <script src="../static/json/month11.json"></script>
+  <script src="../static/json/month12.json"></script>
+  <script>
+  var data = data0;
+  var stateTmp ;
+  var map;
+  var flag = false;
+  // Create the Google Map…
+  function initMap() {
+    map = new google.maps.Map(d3.select("#map").node(), {
+      zoom: 5,
+      center: new google.maps.LatLng(41.88, -107.55),
+      mapTypeId: google.maps.MapTypeId.TERRAIN
+    });
+
+    // Load the station data. When the data comes back, create an overlay.
+    var overlay = new google.maps.OverlayView();
+
+
+    // Add the container when the overlay is added to the map.
+    overlay.onAdd = function() {
+      var layer = d3.select(this.getPanes().overlayMouseTarget).append("div")
+          .attr("class", "stations");
+
+      // Draw each marker as a separate SVG element.
+      // We could use a single SVG, but what size would it have?
+      overlay.draw = function() {
+        var projection = this.getProjection(),
+            padding = 10;
+
+        var marker = layer.selectAll("svg")
+            .data(data.slice(0, 2000))
+            .each(transform) // update existing markers
+          .enter().append("svg")
+            .each(transform)
+            .attr("class", "marker")
+            .on("dblclick", function(d) {
+                window.location.href = '/data_history?index=' + d.index;
+            });
+
+
+        var max = d3.max(data, d => d.value);
+        var min = d3.min(data, d => d.value);
+
+        function gradeColor(value) {
+          var offset = (max - min) / 5;
+          if (value <= min + offset) {
+            return "#FADBD8";
+          } else if (value > min + offset && value <= min + 2 * offset) {
+            return "#D98880";
+          } else if (value > min + 2 * offset && value <= min + 3 * offset) {
+            return "#C0392B";
+          } else if (value > min + 3 * offset && value <= min + 4 * offset) {
+            return "#922B21";
+          } else {
+            return "#641E16";
+          }
+        }
+
+        // Add a circle.
+        marker.append("circle")
+            .attr("r", 4.5)
+            .attr("cx", padding)
+            .attr("cy", padding)
+            .attr("fill", function(d) { return gradeColor(d.value) })
+            .on("mouseover", function(d,i){
+              d3.select(this).attr({fill:"blue", r: 9});
+                document.getElementById("idxVal").innerHTML = d.index;
+                document.getElementById("latVal").innerHTML = d.i.toFixed(2);
+                document.getElementById("lonVal").innerHTML = d.j.toFixed(2);
+                document.getElementById("locVal").innerHTML = d.Location;
+                document.getElementById("priceVal").innerHTML = d.value;
+              })
+            .on("mouseout", function(d,i){d3.select(this).attr({fill: gradeColor(d.value), r: 4.5});});
+        function transform(d) {
+          d = new google.maps.LatLng(d.i, d.j);
+          d = projection.fromLatLngToDivPixel(d);
+          return d3.select(this)
+              .style("left", (d.x - padding) + "px")
+              .style("top", (d.y - padding) + "px");
+        }
+      };
+    };
+
+    // Bind our overlay to the map…
+    overlay.setMap(map);
+  }
+
+  function monthChange() {
+    var monthVal = document.getElementById("month").value;
+    if (monthVal === "Jan") {
+      //console.log(monthVal);
+      data = datamonth1;
+      //console.log(data.slice(0, 10));
+    } else if (monthVal === "Feb") {
+      data = datamonth2;
+    } else if (monthVal === "Mar") {
+      data = datamonth3;
+    } else if (monthVal === "Apr") {
+      data = datamonth4;
+    } else if (monthVal === "May") {
+      data = datamonth5;
+      //console.log(data.slice(0, 10));
+    } else if (monthVal === "Jun") {
+      data = datamonth6;
+    } else if (monthVal === "Jul") {
+      data = datamonth7;
+    } else if (monthVal === "Aug") {
+      data = datamonth8;
+    } else if (monthVal === "Sep") {
+      data = datamonth9;
+    } else if (monthVal === "Oct") {
+      data = datamonth10;
+    } else if (monthVal === "Nov") {
+      data = datamonth11;
+    } else if (monthVal === "Dec") {
+      data = datamonth12;
+    } else {
+      data = data0;
+    }
+    initMap();
+    if (flag == false) {
+      stateTmp =new google.maps.LatLng(41.88, -107.55);
+      flag = true;
+      map.setCenter(stateTmp);
+    } else if (document.getElementById("state").value != "") {
+      map.setCenter(stateTmp);
+      map.setZoom(7);
+    } else {
+      map.setCenter(stateTmp);
+    }
+  }
+
+  function stateChange() {
+      flag = true;
+      var s = document.getElementById("state").value;
+      console.log(s);
+      if (s === "UT") {
+        stateTmp = new google.maps.LatLng(39.291389, -111.703106);
+        map.setCenter(new google.maps.LatLng(39.291389, -111.703106));
+        map.setZoom(7);
+      } else if (s == "AZ") {
+        stateTmp = new google.maps.LatLng(34.009011, -112.310570);
+        map.setCenter(new google.maps.LatLng(34.009011, -112.310570));
+        map.setZoom(7);
+      } else if (s == "CA") {
+        stateTmp = new google.maps.LatLng(37.389715, -121.622629);
+        map.setCenter(new google.maps.LatLng(37.389715, -121.622629));
+        map.setZoom(7);
+      } else if (s == "ID") {
+        stateTmp = new google.maps.LatLng(43.472565, -113.392605);
+        map.setCenter(new google.maps.LatLng(43.472565, -113.392605));
+        map.setZoom(7);
+      } else if (s == "MT") {
+        stateTmp = new google.maps.LatLng(45.713681, -108.507053);
+        map.setCenter(new google.maps.LatLng(45.713681, -108.507053));
+        map.setZoom(7);
+      } else if (s == "NV") {
+        stateTmp = new google.maps.LatLng(40.049741, -117.360067);
+        map.setCenter(new google.maps.LatLng(40.049741, -117.360067));
+        map.setZoom(7);
+      } else if (s == "NM") {
+        stateTmp = new google.maps.LatLng(35.769027, -107.520169);
+        map.setCenter(new google.maps.LatLng(35.769027, -107.520169));
+        map.setZoom(7);
+      } else if (s == "OR") {
+        stateTmp = new google.maps.LatLng(44.578989, -122.318347);
+        map.setCenter(new google.maps.LatLng(44.578989, -122.318347));
+        map.setZoom(7);
+      } else if (s == "WA") {
+        stateTmp = new google.maps.LatLng(47.453504, -121.922288);
+        map.setCenter(new google.maps.LatLng(47.453504, -121.922288));
+        map.setZoom(7);
+      } else if (s == "WY") {
+        stateTmp = new google.maps.LatLng(42.544218, -107.484164);
+        map.setCenter(new google.maps.LatLng(42.544218, -107.484164));
+        map.setZoom(7);
+      } else {
+        stateTmp = new google.maps.LatLng(41.88, -107.55);
+        map.setCenter(new google.maps.LatLng(41.88, -107.55));
+        map.setZoom(5);
+      }
+
+    }
+
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWY3-PfBsGc85olqs4e-dG3uYgZGquhGU&callback=initMap"></script>
+</body>
+<footer>
+    <p class="title">What We Do</p>
+    <p>"Help you visualize your power price."</p>
+    <ul>
+      <li>
+        <p><i class="fa fa-map-o fa-2x"></i></p>
+        <p>University of Arizona, AZ</p>
+      </li>
+      <li>
+        <p><i class="fa fa-envelope-o fa-2x"></i></p>
+        <p>{pjokk722,haomiaoyang,zhengli233,zhengezhao }@email.arizona.edu </p>
+      </li>
+      <li>
+        <p><i class="fa fa-phone fa-2x"></i></p>
+        <p>+1 520 312 0367</p>
+      </li>
+    </ul>
+  </footer>
+

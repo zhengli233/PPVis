@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="POWER-VIS">
+  <meta name="author" content="Ju Pan">
+  <title>Power Price Visualization</title>
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
+</head>
+<body>
+  <header class="top-header">
+    <img src="{{url_for('static', filename='lightning.png')}}" class="logo" align="left">
+    <p class="header-p">
+      <span class="power">
+        POWER
+      </span>
+      <span class="price">
+        PRICE
+      </span>
+      <span class="vis_p">
+        VIS
+      </span>
+    </p>
+  </header>
+
+
+
+
+
+
+
+  <div class="container">
+     <div class = "vis-body" id="container" style="min-width: 310px; height: 400px;"></div>
+    </div>
+
+
+  <footer>
+    <p class="title">What We Do</p>
+    <p>"Help you visualize your power price."</p>
+    <ul>
+      <li>
+        <p><i class="fa fa-map-o fa-2x"></i></p>
+        <p>University of Arizona, AZ</p>
+      </li>
+      <li>
+        <p><i class="fa fa-envelope-o fa-2x"></i></p>
+        <p>{pjokk722,haomiaoyang,zhengli233,zhengezhao }@email.arizona.edu </p>;
+      </li>
+      <li>
+        <p><i class="fa fa-phone fa-2x"></i></p>
+        <p>+1 520 312 0367</p>
+      </li>
+    </ul>
+  </footer>
+     <script>
+      var index = {{ Index|safe }};
+      var series = {{ series|safe }};
+      var lat = {{ Lat|safe }};
+      var lon = {{ Lon|safe }};
+      var loc ='{{Location|safe}}';
+    </script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="../static/js/main.js"></script>
+
+</body>
+</html>
